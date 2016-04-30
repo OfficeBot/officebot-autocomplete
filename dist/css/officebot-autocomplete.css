@@ -1,0 +1,26 @@
+div.autocomplete-list {
+  position: absolute;
+  background-color: white;
+  z-index: 1;
+  border: 1px solid #eee;
+  height: auto;
+  right: 0;
+  left: 0;
+  margin-left: 15px;
+  margin-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+}
+div.autocomplete-list a {
+  color: #141414;
+  font-size: 14px;
+  text-decoration: none;
+}
+.autocomplete-item {
+  padding: 10px;
+  margin: 0;
+}
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background-color: #eee;
+}

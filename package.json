@@ -1,0 +1,44 @@
+{
+  "name": "officebot-autocomplete",
+  "version": "0.1.0",
+  "description": "Flexible autocomplete directive for Angular",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OfficeBot/officebot-autocomplete.git"
+  },
+  "keywords": [
+    "Autocomplete",
+    "OfficeBot",
+    "Office",
+    "Bot"
+  ],
+  "author": "Scott Peterson",
+  "contributers" : [{
+    "name" : "Andrew Prior",
+    "email" : "andrew@office-bot.com"
+  }],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OfficeBot/officebot-autocomplete/issues"
+  },
+  "homepage": "https://github.com/OfficeBot/officebot-autocomplete#readme",
+  "devDependencies": {
+    "angular": "^1.5.1",
+    "jquery": "^2.2.3",
+    "streamify": "^0.2.5",
+    "brfs": "^1.4.3",
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.0.5",
+    "gulp-minify": "0.0.5",
+    "gulp-streamify": "^1.0.2",
+    "gulp-util": "^3.0.7",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {}
+}

@@ -105,7 +105,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				scope.minLength = 3;
 			} else {
 				try {
-					scope.minLength = parseInt(scope.minLength);
+					scope.minLength = parseInt(scope.minLength, 10);
 				} catch(e) {
 					scope.minLength = 3;
 				}
@@ -114,7 +114,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				scope.limit = 100;
 			} else {
 				try {
-					scope.limit = parseInt(scope.limit);
+					scope.limit = parseInt(scope.limit, 10);
 				} catch(e) {
 					scope.limit = 100;
 				}
@@ -124,7 +124,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				scope.debounce = 0;
 			} else {
 				try {
-					scope.debounce = parseInt(scope.debounce);
+					scope.debounce = parseInt(scope.debounce, 10);
 				} catch(e) {
 					scope.debounce = 0;
 				}

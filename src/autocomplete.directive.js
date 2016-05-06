@@ -174,10 +174,11 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				so the autcomplete list is hidden again.
 				*/
 			if (e.which === 13) {
+				console.log('enter was pressed', scope.onSubmit());
 				//If we are submitted because we have a selected item, submit that
 				if (currentSelector !== -1) {
 					return $('.autocomplete-item').eq(currentSelector).trigger('click');
-				} else if ('function' === typeof scope.onSubmit()()) {
+				} else if ('function' === typeof scope.onSubmit()) {
 					scope.onSubmit()(elem.find('input').val());
 					/*
 						This design pattern is everywhere in our code. It ensures that the scope.items = [] is only called on the next

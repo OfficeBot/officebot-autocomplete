@@ -174,7 +174,6 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				so the autcomplete list is hidden again.
 				*/
 			if (e.which === 13) {
-				console.log('enter was pressed', scope.onSubmit());
 				//If we are submitted because we have a selected item, submit that
 				if (currentSelector !== -1) {
 					return $('.autocomplete-item').eq(currentSelector).trigger('click');

@@ -177,8 +177,8 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				//If we are submitted because we have a selected item, submit that
 				if (currentSelector !== -1) {
 					return $('.autocomplete-item').eq(currentSelector).trigger('click');
-				} else if ('function' === typeof scope.onSubmit()) {
-					scope.onSubmit(elem.find('input').val());
+				} else if ('function' === typeof scope.onSubmit()()) {
+					scope.onSubmit()(elem.find('input').val());
 					/*
 						This design pattern is everywhere in our code. It ensures that the scope.items = [] is only called on the next
 						digest cycle without having to check to see if we're in one currently (which sucks and can't be trusted). That

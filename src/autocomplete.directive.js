@@ -16,8 +16,11 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 		replace : true,
 		scope : {
 			onClick : '&',
+			placeholder : '@',
+			ngModel : '=',
 			onSubmit : '&',
 			onMouseover : '&',
+			required : '=',
 			src : '=',
 			minLength : '@',
 			limit : '@',
@@ -33,7 +36,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 					/*jshint multistr: true */
 					elem.html('\
 						<div>\
-							<input ng-model="searchVal" >\
+							<input ng-model="searchVal" placeholder="{{placeholder}}" ng-required="{{required}}">\
 							<div class="autocomplete-list" ng-show="items.length">\
 								<a href \
 									ng-click="set(item)" \
@@ -217,10 +220,10 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 			debounce(runSearch, scope.debounce)();
 
 			function runSearch() {
-
 				if (val.length < scope.minLength) {
 					return $timeout(function() {
 						scope.items = [];
+						scope.ngModel = null;
 					},0);
 				}
 				/*
@@ -256,10 +259,12 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 						}
 
 						//If our data source is a simple array, do some filtering
-						if (Array.isArray(scope.src) && textItem.indexOf(val) == -1) {
+						var pattern = new RegExp(val,'i');
+						if (Array.isArray(scope.src) && textItem.search(pattern) == -1) {
 							return;
 						}
-						var match = textItem.substr( textItem.indexOf(val), val.length );
+						var match = textItem.substr(  textItem.search(pattern), val.length );
+						// var match = textItem.substr( textItem.indexOf(val), val.length );
 
 						var preMatch = textItem.substring( 0, textItem.indexOf( match ) );
 						var postMatch = textItem.substring( textItem.indexOf( match ) + match.length );
@@ -271,6 +276,9 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 	 						postMatch : postMatch
 						});
 					});
+					if (!matches.length) {
+						scope.ngModel = null;
+					}
 					//Queue this up for the next digest cycle
 					$timeout(function() {
 						scope.items = matches;
@@ -363,6 +371,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 			if ('function' === typeof scope.onClick()) {
 				scope.onClick(item);
 			}
+			scope.ngModel = item.target;
 			scope.searchVal = item.preMatch + item.match + item.postMatch;
 		}
 

@@ -7,7 +7,7 @@
 	*/
 module.exports = ['$timeout','$compile', function autocompleteDirective($timeout, $compile) {
 	'use strict';
-	
+
 	var fs = require('fs');
 	var $ = require('jquery');
 
@@ -88,7 +88,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 
 		/**************************************************
 		* Scope watches
-		***************************************************/		
+		***************************************************/
 		scope.$watch('src', updateSource);
 
 		/**************************************************
@@ -152,14 +152,14 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 			* @api private
 			*/
 		function searchProxy() {
-			return $timeout(function() { 
+			return $timeout(function() {
 				return scope.items;
 			},0);
   	}
 
   	/**
   		* @desc This function is bound to the keyup event on the directive's input element. Originally, this functionality
-  		* was split into a few functions, but since we are doing some editing/blocking of event propogation, I was having a 
+  		* was split into a few functions, but since we are doing some editing/blocking of event propogation, I was having a
   		* really hard time getting this to reliable work in the order I needed them to. As an easy work around, they are all
   		* now in the same function, which seems to have resolved all of those issues
 			* @memberof Autocomplete.Directive
@@ -181,7 +181,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				if (currentSelector !== -1) {
 					return $('.autocomplete-item').eq(currentSelector).trigger('click');
 				} else if ('function' === typeof scope.onSubmit()) {
-					scope.onSubmit(elem.find('input').val());
+					scope.onSubmit()(elem.find('input').val());
 					/*
 						This design pattern is everywhere in our code. It ensures that the scope.items = [] is only called on the next
 						digest cycle without having to check to see if we're in one currently (which sucks and can't be trusted). That
@@ -197,7 +197,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				Since we are binding all of our functionality inside of this one event handler, we need to check really fast to
 				see if the user is pressing up or down on the keyboard. If so, we want the view to reflect that by walking through
 				the list of available options. CurrentSelector is a private attribute that tracks the selected element, which makes
-				this easy - just de/increment that value and then call selectItem. Make sure to return after that, since we don't 
+				this easy - just de/increment that value and then call selectItem. Make sure to return after that, since we don't
 				want to trigger a re-search (further down in the code)
 				*/
 			if (e.which === 38) { //up
@@ -210,7 +210,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 
 			/*jshint validthis:true */
 			var val = this.value;
-			
+
 			/*
 				* Debounce code. We want to make sure to not thrash the server (if we're using a remote data source). This libary
 				* doesn't try to do any guessing to see if that's the case. Instead, this directive has a value on scope that
@@ -229,7 +229,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				/*
 					* An important note here before we move on. This search proxy function is almost certainly not the one defined
 					* higher up in this file. Instead, it is likely a function that was created inside of handler function for our
-					* watch on scope.src. That function rewrites this proxy function depending on the type of data source we 
+					* watch on scope.src. That function rewrites this proxy function depending on the type of data source we
 					* passed in to our scope
 				*/
 				searchProxy(val).then(function(values) {
@@ -237,7 +237,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 						* Reset the private attribute of currentSelector. This helps with both sane bound checking, but it feels more natural
 						* to have the arrow down function select the first item after each search, instead of some arbitrary item later in the
 						* list that was selected before the search
-					*/ 
+					*/
 					currentSelector = -1;
 					/*
 						* Cache the searches. For performance, we aren't pushing directly into a scope variable, as that can cause a digest
@@ -257,7 +257,6 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 								*/
 							textItem = item[scope.using];
 						}
-
 						//If our data source is a simple array, do some filtering
 						var pattern = new RegExp(val,'i');
 						if (Array.isArray(scope.src) && textItem.search(pattern) == -1) {
@@ -286,10 +285,10 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 				});
 			}
 		}
-		
+
 		/**
 			* @desc Simply fire off the normal search functionality when the user clicks on the text box
-			* This will make it so the user doesn't have ot modify the text if they want to resubmit a 
+			* This will make it so the user doesn't have ot modify the text if they want to resubmit a
 			* search (after the text box loses focus, of course)
 			* @memberof Autocomplete.Directive
 			* @param {object} event
@@ -343,7 +342,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 
 		/**
 			*	@desc Cleares the temporary values we were using to render the hovered over item. That
-			* is, once the hoverItem is cleared, return the search box text to what it was before the 
+			* is, once the hoverItem is cleared, return the search box text to what it was before the
 			* hover stuff started. NOTE: The hover functions are also used for the arrow up and arrow down functions.
 			* By design, they don't call this function, instead leaving the hover object as the active object. This
 			* needs to happen for a few reasons (like hitting enter and still having that data available to pass back
@@ -369,7 +368,7 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 			*/
 		function setItem(item) {
 			if ('function' === typeof scope.onClick()) {
-				scope.onClick(item);
+				scope.onClick()(item);
 			}
 			scope.ngModel = item.target;
 			scope.searchVal = item.preMatch + item.match + item.postMatch;
@@ -434,9 +433,9 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 		/**
 			* @desc This function will take in an index and use that to look up a given autocomplete
 			* item in our autocomplete list. That item will then be flagged as active (using a CSS)
-			* class. It will then call the internal setHoverItem function will set the text in the 
+			* class. It will then call the internal setHoverItem function will set the text in the
 			* search box to the contents of the currently selected item **without issuing a new search**!
-			* This is important because we don't want to change the list of values that show up in our 
+			* This is important because we don't want to change the list of values that show up in our
 			* autocomplete when we are selecting through them (using the arrow keys, for example)
 			* @memberof Autcomplete.Directive
 			* @param {number} index
@@ -446,19 +445,19 @@ module.exports = ['$timeout','$compile', function autocompleteDirective($timeout
 		function selectItem(index) {
 			$('.autocomplete-item.active').removeClass('active');
 
-			if (index >= $('.autocomplete-item').length) {
+			if (index > $('.autocomplete-item').length -1) {
 				index = 0;
 			}
 			if (index < 0) {
 				index = $('.autocomplete-item').length - 1;
 			}
-
+			currentSelector = index;
 			$('.autocomplete-item').eq(index).addClass('active');
 			//Use timeout here to make sure that we issue this on the next digest cycle. There are hacks
 			//around this, but all of them are sure to break in newer releases of angular. This works just
 			//fine, even if it looks a little hacky
 			return $timeout(function() {
-				setHoverItem(scope.items[index]);			
+				setHoverItem(scope.items[index]);
 			},0);
 		}
 
